@@ -1,22 +1,24 @@
 import { UserAuth } from '../context/AuthContext';
-import { useNavigate, Outlet } from 'react-router-dom';
+import { Navigate, Outlet } from 'react-router-dom';
 
 export default function ProtectedRoute() {
-    // Context
-    const {session, loading} = UserAuth()
+  const { session, loading } = UserAuth();
 
-    // Hooks
-    const navigate = useNavigate()
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#090D16] flex items-center justify-center text-slate-400 text-sm">
+        <div className="flex items-center gap-3">
+          <div className="w-5 h-5 border-2 border-blue-500 border-t-transparent rounded-full animate-spin" />
+          <span>Loading session...</span>
+        </div>
+      </div>
+    );
+  }
 
-    // Loading screen
-    if(loading){
-        return<>Loading...</>
-    }
+  if (!session) {
+    return <Navigate to="/signin" replace />;
+  }
 
-    // if not logged in, redirect the user to "/".
-    if(!session) return navigate("/");
-
-  return (
-    <Outlet />
-  )
+  return <Outlet />;
 }
+
